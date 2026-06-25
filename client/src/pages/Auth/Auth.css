@@ -1,0 +1,142 @@
+/* ═══════════════════════════════════════════
+   Auth Page Styles (Login / SignUp)
+   ═══════════════════════════════════════════ */
+
+.auth-page {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: linear-gradient(135deg, #FEF2F2 0%, #FFF7ED 50%, #F9FAFB 100%);
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.auth-card {
+  background: var(--color-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-8);
+  border: 1px solid var(--color-border);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.auth-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.auth-header h1 {
+  font-size: var(--text-h2);
+  margin-bottom: var(--space-2);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-with-icon {
+  padding-left: 42px !important;
+}
+
+.input-toggle {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  padding: 6px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.input-toggle:hover {
+  color: var(--color-text);
+}
+
+.auth-forgot {
+  text-align: right;
+  margin-bottom: var(--space-4);
+}
+
+.auth-forgot a {
+  font-size: var(--text-body-sm);
+  color: var(--color-info);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.auth-footer a {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* Role Selector */
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+}
+
+.role-option input {
+  display: none;
+}
+
+.role-option:hover {
+  border-color: var(--color-primary);
+}
+
+.role-option.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.role-option svg {
+  flex-shrink: 0;
+}

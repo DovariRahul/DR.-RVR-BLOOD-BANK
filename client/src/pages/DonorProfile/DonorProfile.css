@@ -1,0 +1,99 @@
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8);
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h1 {
+  font-size: var(--text-h2);
+  margin-bottom: var(--space-2);
+}
+
+.profile-badges {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.profile-toggle-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.toggle-label {
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.toggle-lg {
+  width: 60px;
+  height: 30px;
+}
+
+.toggle-lg .toggle-slider::before {
+  width: 26px;
+  height: 26px;
+}
+
+.toggle-lg input:checked + .toggle-slider::before {
+  transform: translateX(30px);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.info-label {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: var(--text-body);
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-6);
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}

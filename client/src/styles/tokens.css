@@ -1,0 +1,104 @@
+/* ═══════════════════════════════════════════════════════════════════
+   RVR BLOOD BANK — Design Tokens
+   CSS Custom Properties (Variables)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Primary (Emergency Red) ── */
+  --color-primary: #DC2626;
+  --color-primary-dark: #B91C1C;
+  --color-primary-darker: #991B1B;
+  --color-primary-light: #FEE2E2;
+  --color-primary-50: #FEF2F2;
+
+  /* ── Secondary (Alert Orange) ── */
+  --color-secondary: #F97316;
+  --color-secondary-dark: #EA580C;
+  --color-secondary-light: #FFF7ED;
+  --color-secondary-50: #FFF7ED;
+
+  /* ── Semantic Colors ── */
+  --color-success: #16A34A;
+  --color-success-dark: #15803D;
+  --color-success-light: #DCFCE7;
+  --color-warning: #EAB308;
+  --color-warning-dark: #CA8A04;
+  --color-warning-light: #FEF9C3;
+  --color-error: #DC2626;
+  --color-error-light: #FEE2E2;
+  --color-info: #3B82F6;
+  --color-info-dark: #2563EB;
+  --color-info-light: #DBEAFE;
+
+  /* ── Backgrounds ── */
+  --color-bg: #FFFFFF;
+  --color-bg-subtle: #F9FAFB;
+  --color-bg-muted: #F3F4F6;
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* ── Text ── */
+  --color-text: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+  --color-text-inverse: #FFFFFF;
+
+  /* ── Borders ── */
+  --color-border: #E5E7EB;
+  --color-border-hover: #D1D5DB;
+  --color-border-focus: #DC2626;
+
+  /* ── Typography ── */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --text-h1: 36px;
+  --text-h2: 28px;
+  --text-h3: 22px;
+  --text-h4: 18px;
+  --text-body: 16px;
+  --text-body-sm: 14px;
+  --text-caption: 12px;
+  --text-button: 14px;
+
+  /* ── Spacing ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Border Radius ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  /* ── Transitions ── */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* ── Container ── */
+  --container-max: 1200px;
+  --sidebar-width: 260px;
+}
+
+/* ── Responsive Token Overrides ── */
+@media (max-width: 767px) {
+  :root {
+    --text-h1: 28px;
+    --text-h2: 22px;
+    --text-h3: 18px;
+    --text-h4: 16px;
+  }
+}

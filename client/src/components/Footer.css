@@ -1,0 +1,101 @@
+.footer {
+  background: var(--color-text);
+  color: #D1D5DB;
+  padding: var(--space-12) 0 var(--space-6);
+  margin-top: var(--space-16);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-8);
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 800;
+  font-size: 16px;
+  color: white;
+  margin-bottom: var(--space-4);
+}
+
+.footer-logo .brand-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.footer-desc {
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+  color: #9CA3AF;
+}
+
+.footer-section h4 {
+  color: white;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-section ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer-section li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-body-sm);
+  color: #9CA3AF;
+}
+
+.footer-section a {
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-section a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-blood-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.footer-bottom {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid #374151;
+  text-align: center;
+  font-size: var(--text-body-sm);
+  color: #6B7280;
+}
+
+.footer-bottom p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.heart-icon {
+  color: var(--color-primary);
+  fill: var(--color-primary);
+}
+
+@media (max-width: 767px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
