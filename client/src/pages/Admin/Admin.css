@@ -12,3 +12,52 @@
   align-items: center;
   gap: var(--space-3);
 }
+
+/* ── Admin Sub-Navigation ── */
+.admin-nav {
+  display: flex;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1);
+  width: fit-content;
+}
+
+.admin-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 20px;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.admin-nav-link:hover {
+  color: var(--color-text);
+  background: var(--color-bg-subtle);
+}
+
+.admin-nav-link.active {
+  color: var(--color-text-inverse);
+  background: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 767px) {
+  .admin-nav {
+    width: 100%;
+  }
+
+  .admin-nav-link {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: var(--text-caption);
+  }
+}

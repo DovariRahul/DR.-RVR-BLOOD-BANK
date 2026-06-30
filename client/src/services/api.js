@@ -82,7 +82,8 @@ export const donorAPI = {
   update: (id, data) => api.put(`/donors/${id}`, data),
   toggleAvailability: (id, isAvailable) => api.patch(`/donors/${id}/availability`, { is_available: isAvailable }),
   respond: (requestId, response) => api.post(`/donors/respond/${requestId}`, { response }),
-  getAll: (params) => api.get('/donors', { params })
+  getAll: (params) => api.get('/donors', { params }),
+  deleteAccount: (password) => api.delete('/donors/account', { data: { password } })
 };
 
 // ── Admin API ──
@@ -90,6 +91,7 @@ export const adminAPI = {
   getAnalytics: () => api.get('/admin/analytics'),
   getActiveRequests: () => api.get('/admin/requests/active'),
   getUsers: (params) => api.get('/admin/users', { params }),
+  getUserById: (id) => api.get(`/admin/users/${id}`),
   updateUser: (id, data) => api.patch(`/admin/users/${id}`, data),
   getAuditLog: (params) => api.get('/admin/audit-log', { params })
 };

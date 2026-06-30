@@ -35,7 +35,7 @@ export default function Login() {
       } else if (user.role === 'admin') {
         navigate('/admin');
       } else if (user.role === 'donor') {
-        navigate('/donor/profile');
+        navigate('/profile');
       } else {
         navigate('/');
       }

@@ -164,8 +164,8 @@ const getRequests = asyncHandler(async (req, res) => {
   const sortDir = sort_order === 'asc' ? 'ASC' : 'DESC';
 
   const [requests, countResult] = await Promise.all([
-    query(`SELECT * FROM blood_requests ${whereClause} ORDER BY ${sortColumn} ${sortDir} LIMIT ? OFFSET ?`,
-      [...params, limitNum, offset]),
+    query(`SELECT * FROM blood_requests ${whereClause} ORDER BY ${sortColumn} ${sortDir} LIMIT ${limitNum} OFFSET ${offset}`,
+      params),
     queryOne(`SELECT COUNT(*) as total FROM blood_requests ${whereClause}`, params)
   ]);
 

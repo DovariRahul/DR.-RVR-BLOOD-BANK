@@ -312,8 +312,8 @@ const getDonors = asyncHandler(async (req, res) => {
        JOIN users u ON d.user_id = u.id
        ${whereClause}
        ORDER BY d.created_at DESC
-       LIMIT ? OFFSET ?`,
-      [...params, limitNum, offset]
+       LIMIT ${limitNum} OFFSET ${offset}`,
+      params
     ),
     queryOne(`SELECT COUNT(*) as total FROM donors d JOIN users u ON d.user_id = u.id ${whereClause}`, params)
   ]);
@@ -332,4 +332,46 @@ const getDonors = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { registerDonor, getMyProfile, updateDonor, toggleAvailability, respondToRequest, getDonors };
+/**
+ * DELETE /api/donors/account
+ * Delete donor account (requires password verification).
+ * This removes the donor record and reverts the user role to 'patient'.
+ */
+const deleteDonorAccount = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+
+  if (!password) {
+    throw new AppError('Password is required to delete your donor account.', 400, 'VALIDATION_ERROR');
+  }
+
+  // Verify password
+  const user = await queryOne('SELECT * FROM users WHERE id = ?', [req.user.id]);
+  if (!user) throw new NotFoundError('User');
+
+  const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+  if (!isPasswordValid) {
+    throw new AppError('Incorrect password. Please try again.', 401, 'AUTH_ERROR');
+  }
+
+  // Get donor record
+  const donor = await queryOne('SELECT id FROM donors WHERE user_id = ?', [req.user.id]);
+  if (!donor) throw new NotFoundError('Donor profile');
+
+  // Delete donor responses first (foreign key)
+  await query('DELETE FROM donor_responses WHERE donor_id = ?', [donor.id]);
+
+  // Delete donor record
+  await query('DELETE FROM donors WHERE id = ?', [donor.id]);
+
+  // Revert user role to patient
+  await query("UPDATE users SET role = 'patient' WHERE id = ?", [req.user.id]);
+
+  logger.info(`Donor account deleted: user #${req.user.id}`);
+
+  res.json({
+    success: true,
+    message: 'Your donor account has been successfully deleted. You can register again anytime.'
+  });
+});
+
+module.exports = { registerDonor, getMyProfile, updateDonor, toggleAvailability, respondToRequest, getDonors, deleteDonorAccount };

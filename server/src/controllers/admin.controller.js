@@ -130,8 +130,8 @@ const getAuditLog = asyncHandler(async (req, res) => {
        FROM admin_audit_log al
        JOIN users u ON al.admin_id = u.id
        ORDER BY al.performed_at DESC
-       LIMIT ? OFFSET ?`,
-      [limitNum, offset]
+       LIMIT ${limitNum} OFFSET ${offset}`,
+      []
     ),
     queryOne('SELECT COUNT(*) as total FROM admin_audit_log')
   ]);
@@ -175,8 +175,8 @@ const getUsers = asyncHandler(async (req, res) => {
   const [users, countResult] = await Promise.all([
     query(
       `SELECT id, full_name, email, phone, role, is_verified, is_active, created_at
-       FROM users ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
-      [...params, limitNum, offset]
+       FROM users ${whereClause} ORDER BY created_at DESC LIMIT ${limitNum} OFFSET ${offset}`,
+      params
     ),
     queryOne(`SELECT COUNT(*) as total FROM users ${whereClause}`, params)
   ]);
@@ -195,4 +195,60 @@ const getUsers = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getAnalytics, getActiveRequests, updateUser, getAuditLog, getUsers };
+/**
+ * GET /api/admin/users/:id
+ * Get a single user's full profile (user + donor info + request/donation history)
+ */
+const getUserById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const user = await queryOne(
+    `SELECT id, full_name, email, phone, role, is_verified, is_active, created_at, updated_at
+     FROM users WHERE id = ?`,
+    [id]
+  );
+  if (!user) throw new NotFoundError('User');
+
+  // If user is a donor, fetch donor profile
+  let donor = null;
+  if (user.role === 'donor') {
+    donor = await queryOne(
+      `SELECT d.*, 
+              GREATEST(0, 90 - DATEDIFF(NOW(), d.last_donation_date)) as days_until_eligible
+       FROM donors d WHERE d.user_id = ?`,
+      [id]
+    );
+  }
+
+  // Fetch blood requests made by this user
+  const requests = await query(
+    `SELECT id, patient_name, blood_group_needed, units_needed, urgency, hospital_name, status, created_at
+     FROM blood_requests WHERE requester_id = ? ORDER BY created_at DESC LIMIT 20`,
+    [id]
+  );
+
+  // Fetch donor responses (if donor)
+  let donorResponses = [];
+  if (donor) {
+    donorResponses = await query(
+      `SELECT dr.response, dr.response_time, dr.created_at,
+              br.blood_group_needed, br.hospital_name, br.urgency, br.patient_name
+       FROM donor_responses dr
+       JOIN blood_requests br ON dr.request_id = br.id
+       WHERE dr.donor_id = ? ORDER BY dr.created_at DESC LIMIT 20`,
+      [donor.id]
+    );
+  }
+
+  res.json({
+    success: true,
+    data: {
+      user,
+      donor,
+      requests,
+      donor_responses: donorResponses
+    }
+  });
+});
+
+module.exports = { getAnalytics, getActiveRequests, updateUser, getAuditLog, getUsers, getUserById };

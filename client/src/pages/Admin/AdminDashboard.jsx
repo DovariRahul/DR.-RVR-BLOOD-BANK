@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { adminAPI } from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import { BarChart3, Users, HeartPulse, Activity, Droplet, Clock, TrendingUp, CheckCircle } from 'lucide-react';
@@ -46,6 +47,15 @@ export default function AdminDashboard() {
         <div className="admin-header">
           <h1><BarChart3 size={28} /> Admin Dashboard</h1>
           <p className="text-muted">Real-time overview of RVR Blood Bank operations</p>
+        </div>
+
+        <div className="admin-nav">
+          <Link to="/admin" className="admin-nav-link active">
+            <BarChart3 size={16} /> Dashboard
+          </Link>
+          <Link to="/admin/users" className="admin-nav-link">
+            <Users size={16} /> User Management
+          </Link>
         </div>
 
         {/* KPI Cards */}
@@ -162,15 +172,15 @@ export default function AdminDashboard() {
                 <tbody>
                   {activeRequests.map(r => (
                     <tr key={r.id}>
-                      <td className="font-semibold">RVR-{r.id}</td>
-                      <td>{r.patient_name}</td>
-                      <td><span className="badge badge-blood">{r.blood_group_needed}</span></td>
-                      <td>{r.units_needed}</td>
-                      <td><span className={`badge badge-${r.urgency}`}>{r.urgency}</span></td>
-                      <td>{r.hospital_name}</td>
-                      <td>{r.donors_notified}</td>
-                      <td>{r.donors_accepted}</td>
-                      <td><span className={`badge badge-${r.status === 'matched' ? 'active' : 'urgent'}`}>{r.status}</span></td>
+                      <td data-label="ID" className="font-semibold">RVR-{r.id}</td>
+                      <td data-label="Patient">{r.patient_name}</td>
+                      <td data-label="Blood"><span className="badge badge-blood">{r.blood_group_needed}</span></td>
+                      <td data-label="Units">{r.units_needed}</td>
+                      <td data-label="Urgency"><span className={`badge badge-${r.urgency}`}>{r.urgency}</span></td>
+                      <td data-label="Hospital">{r.hospital_name}</td>
+                      <td data-label="Notified">{r.donors_notified}</td>
+                      <td data-label="Accepted">{r.donors_accepted}</td>
+                      <td data-label="Status"><span className={`badge badge-${r.status === 'matched' ? 'active' : 'urgent'}`}>{r.status}</span></td>
                     </tr>
                   ))}
                 </tbody>

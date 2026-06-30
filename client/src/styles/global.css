@@ -117,6 +117,18 @@ h4, .h4 {
   padding: var(--space-16) 0;
 }
 
+@media (max-width: 767px) {
+  .container {
+    padding: 0 var(--space-4);
+  }
+  .page {
+    padding: var(--space-4) 0;
+  }
+  .section {
+    padding: var(--space-8) 0;
+  }
+}
+
 /* ── Grid ── */
 .grid {
   display: grid;

@@ -1,14 +1,24 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { donorAPI } from '../../services/api';
-import { Heart, Droplet, MapPin, Bell, Clock, Shield, Calendar, Weight, Activity } from 'lucide-react';
+import { Heart, Droplet, MapPin, Bell, Clock, Shield, Calendar, Weight, Activity, Trash2, AlertTriangle, X, Lock } from 'lucide-react';
 import './DonorProfile.css';
 
 export default function DonorProfile() {
+  const { updateUser } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
   const toast = useToast();
+
+  // Delete account state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     fetchProfile();
@@ -46,6 +56,36 @@ export default function DonorProfile() {
     } finally {
       setToggling(false);
     }
+  };
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    setDeleteError('');
+
+    if (!deletePassword) {
+      setDeleteError('Please enter your password.');
+      return;
+    }
+
+    setDeleteLoading(true);
+    try {
+      await donorAPI.deleteAccount(deletePassword);
+      toast.success('Donor account deleted successfully. You can register again anytime.');
+      // Update the user context to reflect role change
+      updateUser({ role: 'patient' });
+      navigate('/');
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Failed to delete donor account.';
+      setDeleteError(msg);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const openDeleteModal = () => {
+    setDeletePassword('');
+    setDeleteError('');
+    setShowDeleteModal(true);
   };
 
   if (loading) {
@@ -168,16 +208,16 @@ export default function DonorProfile() {
                 <tbody>
                   {response_history.map((r, i) => (
                     <tr key={i}>
-                      <td><span className="badge badge-blood">{r.blood_group_needed}</span></td>
-                      <td>{r.hospital_name}</td>
-                      <td>{r.hospital_city}</td>
-                      <td><span className={`badge badge-${r.urgency}`}>{r.urgency}</span></td>
-                      <td>
+                      <td data-label="Blood Group"><span className="badge badge-blood">{r.blood_group_needed}</span></td>
+                      <td data-label="Hospital">{r.hospital_name}</td>
+                      <td data-label="City">{r.hospital_city}</td>
+                      <td data-label="Urgency"><span className={`badge badge-${r.urgency}`}>{r.urgency}</span></td>
+                      <td data-label="Response">
                         <span className={`badge ${r.response === 'accepted' ? 'badge-active' : r.response === 'declined' ? 'badge-critical' : 'badge-inactive'}`}>
                           {r.response === 'no_response' ? 'No Response' : r.response}
                         </span>
                       </td>
-                      <td className="text-muted text-sm">{new Date(r.created_at).toLocaleDateString()}</td>
+                      <td data-label="Date" className="text-muted text-sm">{new Date(r.created_at).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -191,7 +231,65 @@ export default function DonorProfile() {
             </div>
           )}
         </div>
+
+        {/* Danger Zone — Delete Donor Account */}
+        <div className="card mt-6 danger-zone">
+          <h3 className="card-title danger-title mb-4"><AlertTriangle size={18} /> Danger Zone</h3>
+          <div className="danger-zone-content">
+            <div className="danger-zone-info">
+              <h4>Delete Donor Account</h4>
+              <p className="text-muted text-sm">
+                Permanently remove your donor profile. Your user account will remain, but you will no longer receive donation requests.
+                You can re-register as a donor anytime.
+              </p>
+            </div>
+            <button className="btn btn-danger" onClick={openDeleteModal}>
+              <Trash2 size={16} /> Delete Donor Account
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false); }}>
+          <div className="modal">
+            <div className="modal-header">
+              <h3 className="modal-title" style={{ color: 'var(--color-error)' }}>
+                <AlertTriangle size={20} /> Delete Donor Account
+              </h3>
+              <button className="btn-icon" onClick={() => setShowDeleteModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleDeleteAccount}>
+              <div className="modal-body">
+                <div className="delete-warning">
+                  <AlertTriangle size={32} />
+                  <p><strong>This action cannot be undone.</strong></p>
+                  <p>Your donor profile, availability status, and all donation response history will be permanently deleted.</p>
+                </div>
+                <div className="form-group" style={{ marginTop: 20 }}>
+                  <label className="form-label"><Lock size={14} /> Enter your password to confirm</label>
+                  <input
+                    type="password"
+                    className={`form-input ${deleteError ? 'error' : ''}`}
+                    placeholder="Your account password"
+                    value={deletePassword}
+                    onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
+                    autoFocus
+                  />
+                  {deleteError && <span className="form-error">{deleteError}</span>}
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-ghost" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-danger" disabled={deleteLoading}>
+                  {deleteLoading ? <><div className="spinner"></div> Deleting...</> : <><Trash2 size={16} /> Delete Permanently</>}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

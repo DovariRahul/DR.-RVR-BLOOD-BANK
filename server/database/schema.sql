@@ -120,6 +120,10 @@ CREATE TABLE IF NOT EXISTS admin_audit_log (
   FOREIGN KEY (admin_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert default admin user (Password: Admin@RVR2026)
+-- Insert default admin users (Password: Admin@RVR2026)
 INSERT IGNORE INTO users (full_name, email, password_hash, phone, role, is_verified, is_active)
 VALUES ('RVR Admin', 'admin@rvrbloodbank.org', '$2a$12$K.1w8oOQhMclB/HlS5j73ObDqR7X/oDqT7R2wZ6/q4R8QZ4Z4QZ4Q', '+919999999999', 'admin', 1, 1);
+
+-- Insert DOVARI RAHUL as admin (Password: Admin@RVR2026)
+INSERT IGNORE INTO users (full_name, email, password_hash, phone, role, is_verified, is_active)
+VALUES ('DOVARI RAHUL', 'dovarirahul@rvrbloodbank.org', '$2a$12$K.1w8oOQhMclB/HlS5j73ObDqR7X/oDqT7R2wZ6/q4R8QZ4Z4QZ4Q', '+919999999998', 'admin', 1, 1);

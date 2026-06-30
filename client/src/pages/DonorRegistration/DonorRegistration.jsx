@@ -10,7 +10,7 @@ const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const STATES = ['Andhra Pradesh', 'Telangana', 'Karnataka', 'Tamil Nadu', 'Kerala', 'Maharashtra', 'Delhi', 'Uttar Pradesh', 'West Bengal', 'Gujarat', 'Rajasthan', 'Madhya Pradesh', 'Bihar', 'Odisha', 'Punjab', 'Haryana', 'Jharkhand', 'Chhattisgarh', 'Assam', 'Goa'];
 
 export default function DonorRegistration() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, updateUser } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function DonorRegistration() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [agreed, setAgreed] = useState(false);
+
 
   const handleChange = (e) => {
     const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -48,7 +48,7 @@ export default function DonorRegistration() {
     if (!form.city) errs.city = 'Enter your city.';
     if (!form.state) errs.state = 'Select your state.';
     if (!/^\d{6}$/.test(form.pincode)) errs.pincode = 'Enter a valid 6-digit PIN code.';
-    if (!agreed) errs.terms = 'You must agree to the terms.';
+
     return errs;
   };
 
@@ -62,6 +62,8 @@ export default function DonorRegistration() {
       const year = new Date().getFullYear() - parseInt(form.age, 10);
       const payload = { ...form, date_of_birth: `${year}-01-01` };
       await donorAPI.register(payload);
+      // Update auth context so Navbar immediately shows "My Profile"
+      updateUser({ role: 'donor' });
       setSuccess(true);
       toast.success('Donor registration successful!');
     } catch (error) {
@@ -220,15 +222,10 @@ export default function DonorRegistration() {
           {/* Preferences */}
           <div className="form-section">
             <h3 className="form-section-title"><Shield size={18} /> Preferences & Consent</h3>
-            <label className="form-check" style={{ marginBottom: 12 }}>
+            <label className="form-check">
               <input type="checkbox" name="notification_opt_in" checked={form.notification_opt_in} onChange={handleChange} />
               <span>Receive SMS notifications when matching blood requests are submitted</span>
             </label>
-            <label className="form-check">
-              <input type="checkbox" checked={agreed} onChange={(e) => { setAgreed(e.target.checked); if (errors.terms) setErrors({ ...errors, terms: '' }); }} />
-              <span>I agree to the Terms of Service and consent to sharing my data for blood donation matching</span>
-            </label>
-            {errors.terms && <span className="form-error" style={{ marginTop: 4 }}>{errors.terms}</span>}
           </div>
 
           <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={loading}>

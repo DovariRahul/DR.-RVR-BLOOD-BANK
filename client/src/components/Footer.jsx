@@ -39,8 +39,8 @@ export default function Footer() {
           <div className="footer-section">
             <h4>Contact</h4>
             <ul>
-              <li><Mail size={14} /> info@rvrbloodbank.org</li>
-              <li><Phone size={14} /> +91 9999 999 999</li>
+              <li><Mail size={14} /> raagasai6@gmail.com</li>
+              <li><Phone size={14} /> +91 9491659594</li>
             </ul>
           </div>
         </div>

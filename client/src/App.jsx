@@ -14,7 +14,9 @@ import BloodRequest from './pages/BloodRequest/BloodRequest';
 import RequestStatus from './pages/RequestStatus/RequestStatus';
 import DonorRegistration from './pages/DonorRegistration/DonorRegistration';
 import DonorProfile from './pages/DonorProfile/DonorProfile';
+import UserProfile from './pages/UserProfile/UserProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminUsers from './pages/Admin/AdminUsers';
 
 function App() {
   return (
@@ -48,6 +50,16 @@ function App() {
                   } 
                 />
 
+                {/* Profile Route for all authenticated users */}
+                <Route 
+                  path="/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <UserProfile />
+                    </ProtectedRoute>
+                  } 
+                />
+
                 {/* Donor Routes */}
                 <Route path="/register/donor" element={<DonorRegistration />} />
                 <Route 
@@ -60,6 +72,22 @@ function App() {
                 />
 
                 {/* Admin Routes */}
+                <Route 
+                  path="/admin" 
+                  element={
+                    <ProtectedRoute roles={['admin']}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/users" 
+                  element={
+                    <ProtectedRoute roles={['admin']}>
+                      <AdminUsers />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route 
                   path="/admin/*" 
                   element={

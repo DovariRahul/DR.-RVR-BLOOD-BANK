@@ -33,7 +33,7 @@ export default function Navbar() {
           {!isDonor ? (
             <Link to="/register/donor" className="nav-link" onClick={() => setMobileOpen(false)}>Become a Donor</Link>
           ) : (
-            <Link to="/donor/profile" className="nav-link" onClick={() => setMobileOpen(false)}>
+            <Link to="/profile" className="nav-link" onClick={() => setMobileOpen(false)}>
               <Heart size={16} /> My Profile
             </Link>
           )}
@@ -46,10 +46,14 @@ export default function Navbar() {
 
           {isAuthenticated ? (
             <div className="nav-user">
-              <span className="nav-user-name">
+              <Link
+                to={isAdmin ? '/admin' : '/profile'}
+                className="nav-user-name"
+                onClick={() => setMobileOpen(false)}
+              >
                 <User size={16} />
                 {user.full_name}
-              </span>
+              </Link>
               <button className="btn btn-ghost btn-sm" onClick={handleLogout}>
                 <LogOut size={16} /> Logout
               </button>

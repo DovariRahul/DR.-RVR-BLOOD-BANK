@@ -159,6 +159,22 @@ async function migrate() {
       console.log('Admin user already exists, skipping seed.');
     }
 
+    // Seed DOVARI RAHUL as admin
+    const rahulEmail = 'dovarirahul@rvrbloodbank.org';
+    const [existingRahul] = await connection.query('SELECT id FROM users WHERE email = ?', [rahulEmail]);
+
+    if (existingRahul.length === 0) {
+      const rahulHash = await bcrypt.hash('Admin@RVR2026', 12);
+      await connection.query(
+        `INSERT INTO users (full_name, email, password_hash, phone, role, is_verified, is_active)
+         VALUES (?, ?, ?, ?, 'admin', 1, 1)`,
+        ['DOVARI RAHUL', rahulEmail, rahulHash, '+919999999998']
+      );
+      console.log('Admin user seeded: dovarirahul@rvrbloodbank.org / Admin@RVR2026');
+    } else {
+      console.log('DOVARI RAHUL admin already exists, skipping seed.');
+    }
+
     console.log('Migration completed successfully!');
   } catch (error) {
     console.error('Migration failed:', error.message);
