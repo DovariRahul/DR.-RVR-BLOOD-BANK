@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { donorAPI } from '../../services/api';
-import { Heart, Droplet, MapPin, Bell, Clock, Shield, Calendar, Weight, Activity, Trash2, AlertTriangle, X, Lock } from 'lucide-react';
+import { donorAPI, notificationsAPI } from '../../services/api';
+import {
+  Heart, Droplet, MapPin, Bell, BellOff, Clock, Shield, Calendar, Weight, Activity,
+  Trash2, AlertTriangle, X, Lock, CheckCheck, ChevronDown, ChevronUp,
+  Building2, Phone, PhoneCall, User
+} from 'lucide-react';
 import './DonorProfile.css';
 
 export default function DonorProfile() {
@@ -14,6 +18,12 @@ export default function DonorProfile() {
   const [toggling, setToggling] = useState(false);
   const toast = useToast();
 
+  // Notifications state
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifsLoading, setNotifsLoading] = useState(false);
+  const [expandedNotif, setExpandedNotif] = useState(null);
+
   // Delete account state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
@@ -22,6 +32,7 @@ export default function DonorProfile() {
 
   useEffect(() => {
     fetchProfile();
+    fetchNotifications();
   }, []);
 
   const fetchProfile = async () => {
@@ -33,6 +44,43 @@ export default function DonorProfile() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchNotifications = async () => {
+    setNotifsLoading(true);
+    try {
+      const { data } = await notificationsAPI.getAll();
+      setNotifications(data.data.notifications || []);
+      setUnreadCount(data.data.unread_count || 0);
+    } catch (err) {
+      console.error('Failed to load notifications', err);
+    } finally {
+      setNotifsLoading(false);
+    }
+  };
+
+  const handleMarkRead = useCallback(async (id) => {
+    try {
+      await notificationsAPI.markRead(id);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error('Failed to mark notification as read', err);
+    }
+  }, []);
+
+  const handleMarkAllRead = useCallback(async () => {
+    try {
+      await notificationsAPI.markAllRead();
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error('Failed to mark all as read', err);
+    }
+  }, []);
+
+  const toggleExpand = (id) => {
+    setExpandedNotif(prev => prev === id ? null : id);
   };
 
   const handleToggle = async () => {
@@ -187,6 +235,105 @@ export default function DonorProfile() {
               <span className="info-value">{donor.medical_conditions || 'None specified'}</span>
             </div>
           </div>
+        </div>
+
+        {/* Blood Request Notifications */}
+        <div className="card mt-6 notif-section">
+          <div className="notif-section-header">
+            <div className="notif-section-title">
+              <Bell size={20} className="notif-bell-icon" />
+              <h3 className="card-title">Blood Request Notifications</h3>
+              {unreadCount > 0 && (
+                <span className="notif-count-badge">{unreadCount} new</span>
+              )}
+            </div>
+            {unreadCount > 0 && (
+              <button className="btn btn-ghost btn-sm notif-mark-all-btn" onClick={handleMarkAllRead}>
+                <CheckCheck size={15} /> Mark all as read
+              </button>
+            )}
+          </div>
+
+          {notifsLoading ? (
+            <div className="notif-empty"><div className="spinner" /><p>Loading...</p></div>
+          ) : notifications.length === 0 ? (
+            <div className="notif-empty">
+              <BellOff size={40} className="notif-empty-icon" />
+              <p>No notifications yet.</p>
+              <p className="text-muted text-sm">When someone requests your blood group, details will appear here.</p>
+            </div>
+          ) : (
+            <div className="notif-list">
+              {notifications.map(notif => {
+                const isExpanded = expandedNotif === notif.id || !notif.is_read;
+                return (
+                  <div
+                    key={notif.id}
+                    className={`notif-card ${notif.is_read ? 'notif-read' : 'notif-unread'}`}
+                    onClick={async () => {
+                      toggleExpand(notif.id);
+                      if (!notif.is_read) await handleMarkRead(notif.id);
+                    }}
+                  >
+                    <div className="notif-card-header">
+                      <div className="notif-header-left">
+                        {!notif.is_read && <span className="notif-new-dot" />}
+                        <div className="notif-blood-badge"><Droplet size={13} />{notif.blood_group}</div>
+                        <span className={`badge badge-${notif.urgency}`}>{notif.urgency.toUpperCase()}</span>
+                        {!notif.is_read && <span className="badge badge-new">NEW</span>}
+                      </div>
+                      <div className="notif-header-right">
+                        <span className="notif-time">
+                          <Clock size={12} />
+                          {new Date(notif.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        <span className="notif-expand-btn">
+                          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="notif-message">{notif.message}</p>
+
+                    {isExpanded && (
+                      <div className="notif-details animate-fade-in">
+                        <div className="notif-detail-grid">
+                          <div className="notif-detail-item">
+                            <span className="notif-detail-label"><User size={12} /> Patient</span>
+                            <span className="notif-detail-value">{notif.patient_name}</span>
+                          </div>
+                          <div className="notif-detail-item">
+                            <span className="notif-detail-label"><Building2 size={12} /> Hospital</span>
+                            <span className="notif-detail-value">{notif.hospital_name}</span>
+                          </div>
+                          <div className="notif-detail-item notif-detail-full">
+                            <span className="notif-detail-label"><MapPin size={12} /> Address</span>
+                            <span className="notif-detail-value">{notif.hospital_address}, {notif.hospital_city}, {notif.hospital_state} — {notif.hospital_pincode}</span>
+                          </div>
+                          <div className="notif-detail-item">
+                            <span className="notif-detail-label"><PhoneCall size={12} /> Contact</span>
+                            <span className="notif-detail-value">{notif.contact_name}</span>
+                          </div>
+                          <div className="notif-detail-item">
+                            <span className="notif-detail-label"><Phone size={12} /> Phone</span>
+                            <a href={`tel:${notif.contact_phone}`} className="notif-phone-link" onClick={e => e.stopPropagation()}>
+                              {notif.contact_phone}
+                            </a>
+                          </div>
+                          {notif.additional_notes && (
+                            <div className="notif-detail-item notif-detail-full">
+                              <span className="notif-detail-label">📝 Notes</span>
+                              <span className="notif-detail-value notif-notes">{notif.additional_notes}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Response History */}

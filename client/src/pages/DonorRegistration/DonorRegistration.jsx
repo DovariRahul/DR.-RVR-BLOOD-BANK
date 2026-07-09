@@ -103,7 +103,7 @@ export default function DonorRegistration() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="card request-form">
+        <form onSubmit={handleSubmit} className="card request-form" autoComplete="off">
           {/* Account Info (guests only) */}
           {!isAuthenticated && (
             <div className="form-section">
@@ -111,12 +111,12 @@ export default function DonorRegistration() {
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Email <span className="required">*</span></label>
-                  <input name="email" type="email" className={`form-input ${errors.email ? 'error' : ''}`} value={form.email} onChange={handleChange} />
+                  <input name="email" type="email" className={`form-input ${errors.email ? 'error' : ''}`} value={form.email} onChange={handleChange} autoComplete="off" />
                   {errors.email && <span className="form-error">{errors.email}</span>}
                 </div>
                 <div className="form-group">
                   <label className="form-label">Password <span className="required">*</span></label>
-                  <input name="password" type="password" className={`form-input ${errors.password ? 'error' : ''}`} placeholder="Min 8 characters" value={form.password} onChange={handleChange} />
+                  <input name="password" type="password" className={`form-input ${errors.password ? 'error' : ''}`} placeholder="Min 8 characters" value={form.password} onChange={handleChange} autoComplete="new-password" />
                   {errors.password && <span className="form-error">{errors.password}</span>}
                 </div>
               </div>
@@ -130,12 +130,12 @@ export default function DonorRegistration() {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Full Name <span className="required">*</span></label>
-                <input name="full_name" className={`form-input ${errors.full_name ? 'error' : ''}`} value={form.full_name} onChange={handleChange} />
+                <input name="full_name" className={`form-input ${errors.full_name ? 'error' : ''}`} value={form.full_name} onChange={handleChange} autoComplete="off" />
                 {errors.full_name && <span className="form-error">{errors.full_name}</span>}
               </div>
               <div className="form-group">
                 <label className="form-label">Age <span className="required">*</span></label>
-                <input name="age" type="number" min="18" max="65" className={`form-input ${errors.age ? 'error' : ''}`} placeholder="E.g. 25" value={form.age} onChange={handleChange} />
+                <input name="age" type="number" min="18" max="65" className={`form-input ${errors.age ? 'error' : ''}`} placeholder="E.g. 25" value={form.age} onChange={handleChange} autoComplete="off" />
                 {errors.age && <span className="form-error">{errors.age}</span>}
               </div>
             </div>
@@ -162,26 +162,26 @@ export default function DonorRegistration() {
               </div>
               <div className="form-group">
                 <label className="form-label">Weight (kg) <span className="required">*</span></label>
-                <input name="weight_kg" type="number" min="50" className={`form-input ${errors.weight_kg ? 'error' : ''}`} placeholder="Min 50 kg" value={form.weight_kg} onChange={handleChange} />
+                <input name="weight_kg" type="number" min="50" className={`form-input ${errors.weight_kg ? 'error' : ''}`} placeholder="Min 50 kg" value={form.weight_kg} onChange={handleChange} autoComplete="off" />
                 {errors.weight_kg && <span className="form-error">{errors.weight_kg}</span>}
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Phone Number <span className="required">*</span></label>
-                <input name="phone" type="tel" className={`form-input ${errors.phone ? 'error' : ''}`} placeholder="9876543210" value={form.phone} onChange={handleChange} />
+                <input name="phone" type="tel" className={`form-input ${errors.phone ? 'error' : ''}`} placeholder="9876543210" value={form.phone} onChange={handleChange} autoComplete="off" />
                 {errors.phone && <span className="form-error">{errors.phone}</span>}
               </div>
               <div className="form-group">
                 <label className="form-label">Last Donation Date</label>
-                <input name="last_donation_date" type="date" className="form-input" value={form.last_donation_date} onChange={handleChange} />
+                <input name="last_donation_date" type="date" className="form-input" value={form.last_donation_date} onChange={handleChange} autoComplete="off" />
                 <span className="form-helper">Leave empty if never donated</span>
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Medical Conditions</label>
-                <input name="medical_conditions" className="form-input" placeholder="Optional" value={form.medical_conditions} onChange={handleChange} />
+                <input name="medical_conditions" className="form-input" placeholder="Optional" value={form.medical_conditions} onChange={handleChange} autoComplete="off" />
               </div>
               <div className="form-group">
                  {/* Empty group for spacing */}
@@ -194,13 +194,13 @@ export default function DonorRegistration() {
             <h3 className="form-section-title"><MapPin size={18} /> Address</h3>
             <div className="form-group">
               <label className="form-label">Address <span className="required">*</span></label>
-              <textarea name="address_line" className={`form-textarea ${errors.address_line ? 'error' : ''}`} rows={2} placeholder="Full street address" value={form.address_line} onChange={handleChange} />
+              <textarea name="address_line" className={`form-textarea ${errors.address_line ? 'error' : ''}`} rows={2} placeholder="Full street address" value={form.address_line} onChange={handleChange} autoComplete="off" />
               {errors.address_line && <span className="form-error">{errors.address_line}</span>}
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">City <span className="required">*</span></label>
-                <input name="city" className={`form-input ${errors.city ? 'error' : ''}`} value={form.city} onChange={handleChange} />
+                <input name="city" className={`form-input ${errors.city ? 'error' : ''}`} value={form.city} onChange={handleChange} autoComplete="off" />
                 {errors.city && <span className="form-error">{errors.city}</span>}
               </div>
               <div className="form-group">
@@ -214,7 +214,7 @@ export default function DonorRegistration() {
             </div>
             <div className="form-group" style={{ maxWidth: 200 }}>
               <label className="form-label">PIN Code <span className="required">*</span></label>
-              <input name="pincode" className={`form-input ${errors.pincode ? 'error' : ''}`} placeholder="500001" maxLength={6} value={form.pincode} onChange={handleChange} />
+              <input name="pincode" className={`form-input ${errors.pincode ? 'error' : ''}`} placeholder="500001" maxLength={6} value={form.pincode} onChange={handleChange} autoComplete="off" />
               {errors.pincode && <span className="form-error">{errors.pincode}</span>}
             </div>
           </div>

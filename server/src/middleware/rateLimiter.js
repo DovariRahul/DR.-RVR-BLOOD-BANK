@@ -13,10 +13,10 @@ const generalLimiter = rateLimit({
   }
 });
 
-// Strict limiter for auth endpoints: 5 requests per 15 minutes per IP
+// Auth limiter: 100 requests per 15 minutes per IP
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: {

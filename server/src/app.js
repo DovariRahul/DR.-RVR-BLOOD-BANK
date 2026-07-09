@@ -12,6 +12,7 @@ const requestRoutes = require('./routes/requests.routes');
 const donorRoutes = require('./routes/donors.routes');
 const adminRoutes = require('./routes/admin.routes');
 const statsRoutes = require('./routes/stats.routes');
+const notificationsRoutes = require('./routes/notifications.routes');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/donors', donorRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 // Error handling
 app.use(notFoundHandler);

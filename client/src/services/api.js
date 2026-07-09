@@ -102,4 +102,12 @@ export const publicAPI = {
   getDonorsByGroup: (bloodGroup) => api.get('/stats/public/donors', { params: { blood_group: bloodGroup } })
 };
 
+// ── Notifications API ──
+export const notificationsAPI = {
+  getAll: () => api.get('/notifications'),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
+  markRead: (id) => api.patch(`/notifications/${id}/read`),
+  markAllRead: () => api.patch('/notifications/read-all')
+};
+
 export default api;

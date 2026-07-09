@@ -110,14 +110,14 @@ export default function BloodRequest() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="card request-form">
+        <form onSubmit={handleSubmit} className="card request-form" autoComplete="off">
           {/* Patient Info */}
           <div className="form-section">
             <h3 className="form-section-title"><Droplet size={18} /> Patient Information</h3>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label" htmlFor="patient_name">Patient Name <span className="required">*</span></label>
-                <input id="patient_name" name="patient_name" className={`form-input ${errors.patient_name ? 'error' : ''}`} placeholder="Full name of patient" value={form.patient_name} onChange={handleChange} />
+                <input id="patient_name" name="patient_name" className={`form-input ${errors.patient_name ? 'error' : ''}`} placeholder="Full name of patient" value={form.patient_name} onChange={handleChange} autoComplete="off" />
                 {errors.patient_name && <span className="form-error">{errors.patient_name}</span>}
               </div>
               <div className="form-group">
@@ -132,7 +132,7 @@ export default function BloodRequest() {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label" htmlFor="units_needed">Units Needed <span className="required">*</span></label>
-                <input id="units_needed" name="units_needed" type="number" min="1" max="10" className={`form-input ${errors.units_needed ? 'error' : ''}`} value={form.units_needed} onChange={handleChange} />
+                <input id="units_needed" name="units_needed" type="number" min="1" max="10" className={`form-input ${errors.units_needed ? 'error' : ''}`} value={form.units_needed} onChange={handleChange} autoComplete="off" />
                 {errors.units_needed && <span className="form-error">{errors.units_needed}</span>}
               </div>
               <div className="form-group">
@@ -154,18 +154,18 @@ export default function BloodRequest() {
             <h3 className="form-section-title"><Building2 size={18} /> Hospital Details</h3>
             <div className="form-group">
               <label className="form-label" htmlFor="hospital_name">Hospital Name <span className="required">*</span></label>
-              <input id="hospital_name" name="hospital_name" className={`form-input ${errors.hospital_name ? 'error' : ''}`} placeholder="e.g., City General Hospital" value={form.hospital_name} onChange={handleChange} />
+              <input id="hospital_name" name="hospital_name" className={`form-input ${errors.hospital_name ? 'error' : ''}`} placeholder="e.g., City General Hospital" value={form.hospital_name} onChange={handleChange} autoComplete="off" />
               {errors.hospital_name && <span className="form-error">{errors.hospital_name}</span>}
             </div>
             <div className="form-group">
               <label className="form-label" htmlFor="hospital_address">Hospital Address <span className="required">*</span></label>
-              <textarea id="hospital_address" name="hospital_address" className={`form-textarea ${errors.hospital_address ? 'error' : ''}`} placeholder="Full street address" rows={2} value={form.hospital_address} onChange={handleChange} />
+              <textarea id="hospital_address" name="hospital_address" className={`form-textarea ${errors.hospital_address ? 'error' : ''}`} placeholder="Full street address" rows={2} value={form.hospital_address} onChange={handleChange} autoComplete="off" />
               {errors.hospital_address && <span className="form-error">{errors.hospital_address}</span>}
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label" htmlFor="hospital_city">City <span className="required">*</span></label>
-                <input id="hospital_city" name="hospital_city" className={`form-input ${errors.hospital_city ? 'error' : ''}`} placeholder="City" value={form.hospital_city} onChange={handleChange} />
+                <input id="hospital_city" name="hospital_city" className={`form-input ${errors.hospital_city ? 'error' : ''}`} placeholder="City" value={form.hospital_city} onChange={handleChange} autoComplete="off" />
                 {errors.hospital_city && <span className="form-error">{errors.hospital_city}</span>}
               </div>
               <div className="form-group">
@@ -179,7 +179,7 @@ export default function BloodRequest() {
             </div>
             <div className="form-group" style={{ maxWidth: 200 }}>
               <label className="form-label" htmlFor="hospital_pincode">PIN Code <span className="required">*</span></label>
-              <input id="hospital_pincode" name="hospital_pincode" className={`form-input ${errors.hospital_pincode ? 'error' : ''}`} placeholder="500001" maxLength={6} value={form.hospital_pincode} onChange={handleChange} />
+              <input id="hospital_pincode" name="hospital_pincode" className={`form-input ${errors.hospital_pincode ? 'error' : ''}`} placeholder="500001" maxLength={6} value={form.hospital_pincode} onChange={handleChange} autoComplete="off" />
               {errors.hospital_pincode && <span className="form-error">{errors.hospital_pincode}</span>}
             </div>
           </div>
@@ -190,12 +190,12 @@ export default function BloodRequest() {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label" htmlFor="contact_name">Contact Person <span className="required">*</span></label>
-                <input id="contact_name" name="contact_name" className={`form-input ${errors.contact_name ? 'error' : ''}`} placeholder="Name at hospital" value={form.contact_name} onChange={handleChange} />
+                <input id="contact_name" name="contact_name" className={`form-input ${errors.contact_name ? 'error' : ''}`} placeholder="Name at hospital" value={form.contact_name} onChange={handleChange} autoComplete="off" />
                 {errors.contact_name && <span className="form-error">{errors.contact_name}</span>}
               </div>
               <div className="form-group">
                 <label className="form-label" htmlFor="contact_phone">Contact Phone <span className="required">*</span></label>
-                <input id="contact_phone" name="contact_phone" type="tel" className={`form-input ${errors.contact_phone ? 'error' : ''}`} placeholder="9876543210" maxLength={10} value={form.contact_phone} onChange={handleChange} />
+                <input id="contact_phone" name="contact_phone" type="tel" className={`form-input ${errors.contact_phone ? 'error' : ''}`} placeholder="9876543210" maxLength={10} value={form.contact_phone} onChange={handleChange} autoComplete="off" />
                 {errors.contact_phone && <span className="form-error">{errors.contact_phone}</span>}
               </div>
             </div>

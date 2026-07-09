@@ -7,7 +7,7 @@ import './Auth.css';
 
 export default function SignUp() {
   const [form, setForm] = useState({
-    full_name: '', email: '', phone: '', password: '', confirm_password: '', role: 'patient'
+    full_name: '', email: '', phone: '', password: '', confirm_password: '', role: 'patient', blood_group: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -100,6 +100,17 @@ export default function SignUp() {
                 <input id="signup-phone" name="phone" type="tel" className={`form-input input-with-icon ${errors.phone ? 'error' : ''}`} placeholder="9876543210" value={form.phone} onChange={handleChange} />
               </div>
               {errors.phone && <span className="form-error">{errors.phone}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="signup-blood-group">Blood Group <span style={{fontSize:'12px',color:'var(--color-text-muted)',fontWeight:400}}>(optional — helps notify you for matching requests)</span></label>
+              <div className="input-icon-wrapper">
+                <Droplet size={18} className="input-icon" />
+                <select id="signup-blood-group" name="blood_group" className="form-select input-with-icon" value={form.blood_group} onChange={handleChange}>
+                  <option value="">Select blood group (optional)</option>
+                  {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(g => <option key={g} value={g}>{g}</option>)}
+                </select>
+              </div>
             </div>
 
             <div className="form-row">

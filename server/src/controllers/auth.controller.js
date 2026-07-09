@@ -28,7 +28,7 @@ function generateTokens(user) {
  * POST /api/auth/register
  */
 const register = asyncHandler(async (req, res) => {
-  const { full_name, email, phone, password, role } = req.body;
+  const { full_name, email, phone, password, blood_group } = req.body;
 
   // Check if email already exists
   const existing = await queryOne('SELECT id FROM users WHERE email = ?', [email]);
@@ -43,16 +43,16 @@ const register = asyncHandler(async (req, res) => {
   // Insert user
   const userRole = 'patient'; // Force patient on initial signup to avoid stranded profiles
   const result = await query(
-    `INSERT INTO users (full_name, email, password_hash, phone, role)
-     VALUES (?, ?, ?, ?, ?)`,
-    [full_name, email, passwordHash, formattedPhone, userRole]
+    `INSERT INTO users (full_name, email, password_hash, phone, role, blood_group)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [full_name, email, passwordHash, formattedPhone, userRole, blood_group || null]
   );
 
   const userId = result.insertId;
   const user = { id: userId, full_name, email, role: userRole };
   const tokens = generateTokens(user);
 
-  logger.info(`New user registered: ${email} as ${role}`);
+  logger.info(`New user registered: ${email} as ${userRole}`);
 
   res.status(201).json({
     success: true,
@@ -139,7 +139,11 @@ const refreshToken = asyncHandler(async (req, res) => {
  */
 const getMe = asyncHandler(async (req, res) => {
   const user = await queryOne(
-    'SELECT id, full_name, email, phone, role, is_verified, is_active, created_at FROM users WHERE id = ?',
+    `SELECT u.id, u.full_name, u.email, u.phone, u.role, u.is_verified, u.is_active, u.created_at, 
+            d.blood_group, d.last_donation_date 
+     FROM users u 
+     LEFT JOIN donors d ON u.id = d.user_id 
+     WHERE u.id = ?`,
     [req.user.id]
   );
 

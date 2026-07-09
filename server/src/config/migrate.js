@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash VARCHAR(255) NOT NULL,
   phone VARCHAR(15) NOT NULL,
   role ENUM('patient', 'donor', 'admin') NOT NULL DEFAULT 'patient',
+  blood_group ENUM('A+','A-','B+','B-','AB+','AB-','O+','O-') NULL,
   is_verified TINYINT(1) DEFAULT 0,
   is_active TINYINT(1) DEFAULT 1,
   fcm_token VARCHAR(255) NULL,
@@ -22,7 +23,8 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_users_email (email),
   INDEX idx_users_role (role),
-  INDEX idx_users_phone (phone)
+  INDEX idx_users_phone (phone),
+  INDEX idx_users_blood_group (blood_group)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS donors (
@@ -122,6 +124,30 @@ CREATE TABLE IF NOT EXISTS admin_audit_log (
   details JSON NULL,
   performed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (admin_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_notifications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  recipient_id INT NOT NULL,
+  request_id INT NOT NULL,
+  message TEXT NOT NULL,
+  patient_name VARCHAR(100) NOT NULL,
+  blood_group VARCHAR(10) NOT NULL,
+  urgency ENUM('critical','urgent','standard') NOT NULL DEFAULT 'standard',
+  hospital_name VARCHAR(200) NOT NULL,
+  hospital_address VARCHAR(255) NOT NULL,
+  hospital_city VARCHAR(100) NOT NULL,
+  hospital_state VARCHAR(100) NOT NULL,
+  hospital_pincode VARCHAR(10) NOT NULL,
+  contact_name VARCHAR(100) NOT NULL,
+  contact_phone VARCHAR(20) NOT NULL,
+  additional_notes TEXT NULL,
+  is_read TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE CASCADE,
+  INDEX idx_notif_recipient (recipient_id, is_read),
+  INDEX idx_notif_request (request_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 `;
 

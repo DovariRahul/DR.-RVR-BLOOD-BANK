@@ -68,6 +68,55 @@ const createRequest = asyncHandler(async (req, res) => {
       logger.error(`Matching failed for request #${requestId}:`, error.message);
       await query("UPDATE blood_requests SET status = 'pending' WHERE id = ?", [requestId]);
     }
+
+    // Send in-app notifications to ALL users whose blood_group matches the request
+    // This covers both donors (via donors table) and regular users (via users.blood_group)
+    try {
+      const notifMessage = `Someone needs your ${blood_group_needed} blood group blood! A patient requires urgent help — please check the details below.`;
+
+      // Match users directly by blood_group on the users table (covers non-donors who registered their group)
+      const matchingUsersFromTable = await query(
+        `SELECT id FROM users
+         WHERE blood_group = ? AND is_active = 1 AND id != ?`,
+        [blood_group_needed, req.user.id]
+      );
+
+      // Also match donors via the donors table (their blood_group may not yet be on users table)
+      const matchingDonorUsers = await query(
+        `SELECT u.id FROM users u
+         JOIN donors d ON d.user_id = u.id
+         WHERE d.blood_group = ? AND u.is_active = 1 AND u.id != ?`,
+        [blood_group_needed, req.user.id]
+      );
+
+      // Merge and deduplicate recipient IDs
+      const allIds = new Set([
+        ...matchingUsersFromTable.map(u => u.id),
+        ...matchingDonorUsers.map(u => u.id)
+      ]);
+
+      if (allIds.size > 0) {
+        for (const uid of allIds) {
+          await query(
+            `INSERT INTO user_notifications
+             (recipient_id, request_id, message, patient_name, blood_group, urgency,
+              hospital_name, hospital_address, hospital_city, hospital_state, hospital_pincode,
+              contact_name, contact_phone, additional_notes)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              uid, requestId, notifMessage,
+              patient_name, blood_group_needed, urgency,
+              hospital_name, hospital_address, hospital_city, hospital_state, hospital_pincode,
+              contact_name, contact_phone, additional_notes || null
+            ]
+          );
+        }
+
+        logger.info(`Request #${requestId}: in-app notifications sent to ${allIds.size} users`);
+      }
+    } catch (notifError) {
+      logger.error(`Failed to create in-app notifications for request #${requestId}:`, notifError.message);
+    }
   });
 
   res.status(201).json({
